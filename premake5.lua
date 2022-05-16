@@ -1,44 +1,44 @@
-include "./vendor/premake/premake_customization/solution_items.lua"
+project "ImGui"
+	kind "StaticLib"
+	language "C++"
+    staticruntime "on"
 
-workspace "Hazel"
-	architecture "x86_64"
-	startproject "Hazelnut"
+	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	configurations
+	files
 	{
-		"Debug",
-		"Release",
-		"Dist"
+		"imconfig.h",
+		"imgui.h",
+		"imgui.cpp",
+		"imgui_draw.cpp",
+		"imgui_internal.h",
+		"imgui_tables.cpp",
+		"imgui_widgets.cpp",
+		"imstb_rectpack.h",
+		"imstb_textedit.h",
+		"imstb_truetype.h",
+		"imgui_demo.cpp"
 	}
 
-	solution_items
-	{
-		".editorconfig"
-	}
+	filter "system:windows"
+		systemversion "latest"
+		cppdialect "C++17"
 
-	flags
-	{
-		"MultiProcessorCompile"
-	}
+	filter "system:linux"
+		pic "On"
+		systemversion "latest"
+		cppdialect "C++17"
 
-outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+	filter "configurations:Debug"
+		runtime "Debug"
+		symbols "on"
 
-IncludeDir = {}
-IncludeDir["spdlog"] = "%{wks.location}/Hazel/vendor/spdlog/include"
-IncludeDir["GLFW"] = "%{wks.location}/Hazel/vendor/GLFW/include"
-IncludeDir["Glad"] = "%{wks.location}/Hazel/vendor/Glad/include"
-IncludeDir["Imgui"] = "%{wks.location}/Hazel/vendor/imgui"
-IncludeDir["glm"] = "%{wks.location}/Hazel/vendor/glm"
-IncludeDir["stb_image"] = "%{wks.location}/Hazel/vendor/stb_image"
-IncludeDir["entt"] = "%{wks.location}/Hazel/vendor/entt/include"
+	filter "configurations:Release"
+		runtime "Release"
+		optimize "on"
 
-group "Dependencies"
-	include "vendor/premake"
-	include "Hazel/vendor/GLFW"
-	include "Hazel/vendor/Glad"
-	include "Hazel/vendor/imgui"
-group ""
-
-include "Hazel"
-include "Sandbox"
-include "Hazelnut"
+    filter "configurations:Dist"
+		runtime "Release"
+		optimize "on"
+        symbols "off"
